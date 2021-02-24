@@ -8,21 +8,33 @@ var T = new Twit(config);
 const newNicks = [];
 const oldNicks = [];
 
-newChallPlayers.map((newChall) => {
-  oldNicks.push(newChall.nick);
-});
 
 oldChallPLayers.map((oldChall) => {
   newNicks.push(oldChall.nick);
 });
 
-const newChalls = newNicks.join(',   ');
-const oldChalls = oldNicks.join(',   ');
-
-T.post('https://api.twitter.com/1.1/statuses/update.json', {status: `🟢 Entraram no Challenger 🟢 \n${newChalls}\n\n🔴 Sairam do Challenger 🔴\n${oldChalls}`}, (err, data, response) => {
-  if (err) {return err};
+newChallPlayers.map((newChall) => {
+  oldNicks.push(newChall.nick);
 });
 
 
-console.log(`New Challengers: ${newChalls}`);
-console.log(`Old Challengers: ${oldChalls}`);
+const newChalls = newNicks.join(',   ');
+const oldChalls = oldNicks.join(',   ');
+
+const tamNew = newChalls.length;
+const tamOld = oldChalls.length;
+
+if (tamNew < 280 && tamOld < 280) {
+  T.post('https://api.twitter.com/1.1/statuses/update.json', {status: `🔴 Sairam do Challenger 🔴\n${oldChalls}`}, (err, data, response) => {
+    if (err) {return err};
+    T.post('https://api.twitter.com/1.1/statuses/update.json', {status: `🟢 Entraram no Challenger 🟢 \n${newChalls}`}, (err, data, response) => {
+      if (err) {return err};
+    });
+  });
+  console.log(`New Challengers: ${newChalls}`);
+  console.log(`Old Challengers: ${oldChalls}`);
+}
+else 
+  console.log(`[-] Ultrapassou 280 caracteres\n${tamNew}\n${tamOld}`)
+
+
